@@ -15,3 +15,10 @@ def hello():
 @app.route("/products.json")
 def products_index():
     return db.products_all()
+
+@app.route("/products.json", methods=["POST"])
+def create():
+    name = request.form.get("name")
+    category = request.form.get("category")
+    price = request.form.get("price")
+    return db.products_create(name, category, price)

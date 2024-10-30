@@ -104,3 +104,16 @@ def products_all():
         """
     ).fetchall()
     return [dict(row) for row in rows]
+
+def products_create(name, category, price):
+    conn = connect_to_db()
+    row = conn.execute(
+        """
+        INSERT INTO products (name, category, price)
+        VALUES (?, ?, ?)
+        RETURNING *
+        """,
+        (name, category, price),
+    ).fetchone()
+    conn.commit()
+    return dict(row)
