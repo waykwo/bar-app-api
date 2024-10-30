@@ -117,3 +117,14 @@ def products_create(name, category, price):
     ).fetchone()
     conn.commit()
     return dict(row)
+
+def products_find_by_id(id):
+    conn = connect_to_db()
+    row = conn.execute(
+        """
+        SELECT * FROM products
+        WHERE id = ?
+        """,
+        (id,),
+    ).fetchone()
+    return dict(row)
