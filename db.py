@@ -87,14 +87,14 @@ if __name__ == "__main__":
     products_setup()
 
 
-def photos_all():
-    conn = connect_to_db()
-    rows = conn.execute(
-        """
-        SELECT * FROM photos
-        """
-    ).fetchall()
-    return [dict(row) for row in rows]
+# def photos_all():
+#     conn = connect_to_db()
+#     rows = conn.execute(
+#         """
+#         SELECT * FROM photos
+#         """
+#     ).fetchall()
+#     return [dict(row) for row in rows]
 
 def products_all():
     conn = connect_to_db()
@@ -128,3 +128,41 @@ def products_find_by_id(id):
         (id,),
     ).fetchone()
     return dict(row)
+
+def products_update_by_id(id, name, category, price):
+    conn = connect_to_db()
+    row = conn.execute(
+        """
+        UPDATE products SET name = ?, category = ?, price = ?
+        WHERE id = ?
+        RETURNING *
+        """,
+        (name, category, price, id),
+    ).fetchone()
+    conn.commit()
+    return dict(row)
+
+# def products_update_by_id(id, name=None, category=None, price=None):
+#     conn = connect_to_db()
+#     # Build dynamic SQL query with only the fields that are not None
+#     fields_to_update = []
+#     values = []
+#     if name is not None:
+#         fields_to_update.append("name = ?")
+#         values.append(name)
+#     if category is not None:
+#         fields_to_update.append("category = ?")
+#         values.append(category)
+#     if price is not None:
+#         fields_to_update.append("price = ?")
+#         values.append(price)
+#     if not fields_to_update:
+#         return {"error": "No fields to update"}, 400
+#     # Join the update fields with commas and add the id to the end of values
+#     query = f"UPDATE products SET {', '.join(fields_to_update)} WHERE id = ? RETURNING *"
+#     values.append(id)
+#     # Execute the query with the dynamic values
+#     row = conn.execute(query, values).fetchone()
+#     conn.commit()
+#     conn.close()
+#     return dict(row)
